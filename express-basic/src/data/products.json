@@ -1,0 +1,26 @@
+[
+  {
+    "id": 0,
+    "title": "น้ำสิงห์",
+    "description": "น้ำสิงห์",
+    "price": 16
+  },
+  {
+    "id": 1,
+    "title": "น้ำ 40",
+    "description": "40",
+    "price": 60
+  },
+  {
+    "id": 2,
+    "title": "น้ำแสง",
+    "description": "น้ำแสงแบน",
+    "price": 160
+  },
+  {
+    "id": 3,
+    "title": "น้ำแสง",
+    "description": "น้ำแสงกลม",
+    "price": 360
+  }
+]

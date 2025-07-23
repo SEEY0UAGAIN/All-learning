@@ -1,0 +1,27 @@
+{
+  "name": "bontodev",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "chalk": "^4.1.2",
+    "debug": "^4.4.1",
+    "ejs": "^3.1.10",
+    "express": "^5.1.0",
+    "morgan": "^1.10.0",
+    "nodemon": "^3.1.10"
+  },
+  "nodemonConfig": {
+    "restartable": "rs",
+    "delay": 2000,
+    "env": {
+      "PORT": "5000"
+    }
+  }
+}
