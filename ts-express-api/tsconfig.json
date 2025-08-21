@@ -16,6 +16,10 @@
     // Type Definitions
     "types": ["node", "express"],
 
+    // Decorators 
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+
     // Other Outputs
     "sourceMap": true,
     "declaration": true,
