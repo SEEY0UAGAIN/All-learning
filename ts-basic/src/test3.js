@@ -1,0 +1,11 @@
+var user1 = { name: "John", age: 30 };
+var user2 = { name: "Jane", age: 25, isStudent: true };
+console.log(user1);
+console.log(user2);
+var product1 = { id: 1, name: "IPhone", price: 30000 };
+console.log(product1);
+var userId = 123;
+var userId2 = "abc123";
+console.log(userId);
+console.log(userId2);
+var admin = { name: "Admin", age: 24, role: "admin" };
