@@ -1,8 +1,8 @@
 import "reflect-metadata";
 import express from 'express';
 import { AppDataSource } from "./data-source";
-import userRouter from "./routes/user";
-import errorHandler from "./middleware/Middleware";
+import authRoutes from "./routes/authRoutes";
+import errorHandler from "./middleware/errorHandler";
 
 const app = express();
 const port = 3000;
@@ -31,7 +31,7 @@ async function waitForDatabaseAndStart() {
         process.exit(1);
     }
 
-    app.use("/users", userRouter);
+    app.use("/", authRoutes);
     app.use(errorHandler);
     
     app.listen(3000, "0.0.0.0", () => {
@@ -39,7 +39,5 @@ async function waitForDatabaseAndStart() {
     })
 
 }
-
-app.get("/", (req, res) => res.send("Hello from TypeScript + Express!!!"));
 
 waitForDatabaseAndStart();
