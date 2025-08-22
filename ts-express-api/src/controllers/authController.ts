@@ -51,7 +51,7 @@ export const login = async (req: Request<{}, {}, LoginRequest>,res: Response) =>
         return res.status(401).json({ message: "Invalid password" });
 
     // สร้าง Access Token
-    const secret = process.env.JWT_SECRET || "defaultSecret";
+    const secret = process.env.JWT_SECRET as string;
     const accessToken = jwt.sign(
         { userId: user.id, username: user.username },
         secret,
