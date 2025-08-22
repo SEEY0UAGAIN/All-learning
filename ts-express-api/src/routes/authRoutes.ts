@@ -1,5 +1,5 @@
 import { Router, Request, Response, NextFunction } from "express";
-import { register, login } from "../controllers/authController";
+import { register, login, refresh } from "../controllers/authController";
 import { AuthRequest,authenticateJWT } from "../middleware/auth";
 import { AppDataSource } from "../data-source";
 import { User } from "../entity/User";
@@ -13,6 +13,7 @@ interface CustomError extends Error {
 
 router.post("/register", register);
 router.post("/login", login);
+router.post("/refresh", refresh);
 router.get("/profile", authenticateJWT, (req, res) => {
   res.json({ message: "Profile access granted", user: (req as any).user });
 });

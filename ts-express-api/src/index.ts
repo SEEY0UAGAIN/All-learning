@@ -2,12 +2,16 @@ import "reflect-metadata";
 import express from 'express';
 import { AppDataSource } from "./data-source";
 import authRoutes from "./routes/authRoutes";
+import dotenv from "dotenv";
+import cookieParser from "cookie-parser";
 import errorHandler from "./middleware/errorHandler";
 
 const app = express();
-const port = 3000;
+dotenv.config();
+const port = process.env.PORT || 3000;
 
 app.use(express.json());
+app.use(cookieParser());
 
 async function waitForDatabaseAndStart() {
     const maxRetries = 10;
