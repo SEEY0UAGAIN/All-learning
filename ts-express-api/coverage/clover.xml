@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1756038623578" clover="3.2.0">
-  <project timestamp="1756038623578" name="All files">
-    <metrics statements="112" coveredstatements="85" conditionals="40" coveredconditionals="22" methods="11" coveredmethods="7" elements="163" coveredelements="114" complexity="0" loc="112" ncloc="112" packages="5" files="8" classes="8"/>
+<coverage generated="1756045518191" clover="3.2.0">
+  <project timestamp="1756045518192" name="All files">
+    <metrics statements="112" coveredstatements="97" conditionals="40" coveredconditionals="25" methods="11" coveredmethods="9" elements="163" coveredelements="131" complexity="0" loc="112" ncloc="112" packages="5" files="8" classes="8"/>
     <package name="src">
       <metrics statements="17" coveredstatements="17" conditionals="2" coveredconditionals="1" methods="0" coveredmethods="0"/>
       <file name="app.ts" path="C:\Users\SEEYOUAGAIN\Desktop\learning\ts-express-api\src\app.ts">
@@ -29,9 +29,9 @@
       </file>
     </package>
     <package name="src.controllers">
-      <metrics statements="60" coveredstatements="45" conditionals="30" coveredconditionals="21" methods="9" coveredmethods="7"/>
+      <metrics statements="60" coveredstatements="57" conditionals="30" coveredconditionals="24" methods="9" coveredmethods="9"/>
       <file name="authController.ts" path="C:\Users\SEEYOUAGAIN\Desktop\learning\ts-express-api\src\controllers\authController.ts">
-        <metrics statements="38" coveredstatements="24" conditionals="16" coveredconditionals="10" methods="6" coveredmethods="4"/>
+        <metrics statements="38" coveredstatements="36" conditionals="16" coveredconditionals="13" methods="6" coveredmethods="6"/>
         <line num="2" count="2" type="stmt"/>
         <line num="3" count="2" type="stmt"/>
         <line num="4" count="2" type="stmt"/>
@@ -47,24 +47,24 @@
         <line num="36" count="1" type="stmt"/>
         <line num="37" count="1" type="stmt"/>
         <line num="39" count="1" type="stmt"/>
-        <line num="42" count="2" type="stmt"/>
-        <line num="43" count="0" type="stmt"/>
-        <line num="44" count="0" type="stmt"/>
-        <line num="46" count="0" type="stmt"/>
-        <line num="47" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="49" count="0" type="stmt"/>
-        <line num="50" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="51" count="0" type="stmt"/>
-        <line num="54" count="0" type="stmt"/>
-        <line num="55" count="0" type="stmt"/>
-        <line num="62" count="0" type="stmt"/>
-        <line num="67" count="0" type="stmt"/>
-        <line num="74" count="0" type="stmt"/>
+        <line num="42" count="3" type="stmt"/>
+        <line num="43" count="3" type="stmt"/>
+        <line num="44" count="3" type="stmt"/>
+        <line num="46" count="3" type="stmt"/>
+        <line num="47" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="49" count="2" type="stmt"/>
+        <line num="50" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="51" count="1" type="stmt"/>
+        <line num="54" count="1" type="stmt"/>
+        <line num="55" count="1" type="stmt"/>
+        <line num="62" count="1" type="stmt"/>
+        <line num="67" count="1" type="stmt"/>
+        <line num="74" count="1" type="stmt"/>
         <line num="77" count="3" type="stmt"/>
         <line num="78" count="3" type="stmt"/>
         <line num="80" count="3" type="cond" truecount="2" falsecount="0"/>
         <line num="81" count="1" type="stmt"/>
-        <line num="84" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="84" count="2" type="cond" truecount="1" falsecount="1"/>
         <line num="86" count="2" type="stmt"/>
         <line num="88" count="2" type="stmt"/>
         <line num="91" count="1" type="stmt"/>

@@ -1,8 +1,3 @@
-import { register, login, refresh} from "../src/controllers/authController";
-import { Request, Response } from "express";
-import jwt from "jsonwebtoken";
-import bcrypt from "bcryptjs";
-
 const mockSave = jest.fn();
 const mockFindOneBy = jest.fn();
 
@@ -18,10 +13,19 @@ jest.mock("../src/data-source", () => {
   };
 });
 
+import { register, login, refresh} from "../src/controllers/authController";
+import { Request, Response } from "express";
+import jwt from "jsonwebtoken";
+import bcrypt from "bcryptjs";
+import dotenv from "dotenv";
+
+dotenv.config({ path: ".env.test" });
+
 const createMockResponse = () => {
   const res: Partial<Response> = {};
   res.status = jest.fn().mockReturnValue(res);
   res.json = jest.fn().mockReturnValue(res);
+  res.cookie = jest.fn();
   return res as Response;
 };
 
@@ -37,6 +41,78 @@ describe("AuthController - register", () => {
 
     expect(status).toHaveBeenCalledWith(201);
     expect(json).toHaveBeenCalledWith(expect.objectContaining({ message: "User registered" }));
+  });
+});
+
+describe("AuthController - Login", () => {
+  it("Login complete", async () => {
+    const secret = "testSecret";
+    process.env.JWT_SECRET = secret;
+    const hashedPassword = await bcrypt.hash("123456", 10);
+    const fakeUser = { id:1, username: "testuser", password: hashedPassword };
+
+    mockFindOneBy.mockResolvedValue(fakeUser);
+
+    const res: Partial<Response> = {
+      json: jest.fn(),
+      cookie: jest.fn(),
+    } as any;
+
+    const req = {
+      body: { username: "testuser", password: "123456" },
+    } as Partial<Response>;
+
+    await login(req as any,res as any);
+
+    expect(res.json).toHaveBeenCalledWith(
+      expect.objectContaining({
+        accessToken: expect.any(String),
+      })
+    );
+
+    expect(res.cookie).toHaveBeenCalledWith(
+      "refreshToken",
+      expect.any(String),
+      expect.objectContaining({
+        httpOnly: true,
+        sameSite: "strict",
+      })
+    )
+  });
+
+  it("User not found", async () => {
+    mockFindOneBy.mockReturnValue(null);
+
+    const req = { body: { username: "UUUUUUUU", password: "123456"} } as Partial<Request>;
+    const res: Partial<Response> = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    } as any;
+
+    await login(req as any, res as any);
+
+    expect(res.status).toHaveBeenCalledWith(404);
+    expect(res.json).toHaveBeenCalledWith({ message: "User not found" });
+  });
+
+    it("Password is invalid", async () => {
+    const hashedPassword = await bcrypt.hash("1111111", 10);
+    const fakeUser = { id:1, username: "testuser", password: hashedPassword };
+
+    mockFindOneBy.mockResolvedValue(fakeUser);
+
+    const res: Partial<Response> = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+      cookie: jest.fn(),
+    } as any;
+
+    const req = { body: { username: "testuser", password: "1112221" } } as Partial<Response>;
+
+    await login(req as any,res as any);
+
+  expect(res.status).toHaveBeenCalledWith(401);
+  expect(res.json).toHaveBeenCalledWith({ message: "Invalid password" });
   });
 });
 
@@ -72,7 +148,7 @@ describe("AuthController - refresh", () => {
     await refresh(req as any, res);
 
     expect(res.json).toHaveBeenCalledWith(
-      expect.objectContaining({ accessToken: expect.any(String) })
+    expect.objectContaining({ accessToken: expect.any(String) })
     );
   });
 });

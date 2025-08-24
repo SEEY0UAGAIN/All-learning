@@ -1,6 +1,5 @@
 import { getProfile, editProfile } from "../src/controllers/profileController";
 import { Request, Response, NextFunction } from "express";
-import bcrypt from "bcryptjs";
 
 jest.mock("../src/data-source", () => ({
   AppDataSource: {

@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">64.44% </span>
+                <span class="strong">95.55% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>29/45</span>
+                <span class='fraction'>43/45</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">62.5% </span>
+                <span class="strong">81.25% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>10/16</span>
+                <span class='fraction'>13/16</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">66.66% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>4/6</span>
+                <span class='fraction'>6/6</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">63.15% </span>
+                <span class="strong">94.73% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>24/38</span>
+                <span class='fraction'>36/38</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line medium'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -205,39 +205,39 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
@@ -306,39 +306,39 @@ export const register = async (req: Request&lt;{}, {}, RegisterRequest&gt;,res: 
     res.status(201).json({ message: "User registered", userId: user.id });
 };
 &nbsp;
-export const login = <span class="fstat-no" title="function not covered" >async (r</span>eq: Request&lt;{}, {}, LoginRequest&gt;,res: Response) =&gt;<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" > {</span></span>
-    const { username, password } = <span class="cstat-no" title="statement not covered" >req.body;</span>
-    const userRepo = <span class="cstat-no" title="statement not covered" >AppDataSource.getRepository(User);</span>
+export const login = async (req: Request&lt;{}, {}, LoginRequest&gt;,res: Response) =&gt; {
+    const { username, password } = req.body;
+    const userRepo = AppDataSource.getRepository(User);
 &nbsp;
-    const user = <span class="cstat-no" title="statement not covered" >await userRepo.findOneBy({ username });</span>
-<span class="cstat-no" title="statement not covered" >    if (!user) <span class="cstat-no" title="statement not covered" >return res.status(404).json({ message: "User not found" });</span></span>
+    const user = await userRepo.findOneBy({ username });
+    if (!user) return res.status(404).json({ message: "User not found" });
 &nbsp;
-    const validPassword = <span class="cstat-no" title="statement not covered" >await bcrypt.compare(password, user.password);</span>
-<span class="cstat-no" title="statement not covered" >    if (!validPassword)</span>
-<span class="cstat-no" title="statement not covered" >        return res.status(401).json({ message: "Invalid password" });</span>
+    const validPassword = await bcrypt.compare(password, user.password);
+    if (!validPassword)
+        return res.status(401).json({ message: "Invalid password" });
 &nbsp;
     // สร้าง Access Token
-    const secret = <span class="cstat-no" title="statement not covered" >process.env.JWT_SECRET as string;</span>
-    const accessToken = <span class="cstat-no" title="statement not covered" >jwt.sign(</span>
+    const secret = process.env.JWT_SECRET as string;
+    const accessToken = jwt.sign(
         { userId: user.id, username: user.username },
         secret,
         { expiresIn: "15m" } // access token อายุสั้น
     );
 &nbsp;
     // สร้าง Refresh Token
-    const refreshToken = <span class="cstat-no" title="statement not covered" >jwt.sign({ userId: user.id }, secret, {</span>
+    const refreshToken = jwt.sign({ userId: user.id }, secret, {
         expiresIn: "7d",
     });
 &nbsp;
     // เก็บ Refresh Token ลง Cookie
-<span class="cstat-no" title="statement not covered" >    res.cookie("refreshToken", refreshToken, {</span>
+    res.cookie("refreshToken", refreshToken, {
         httpOnly: true, // JS ฝั่ง client อ่านไม่ได้
         secure: process.env.NODE_ENV === "production", // dev=false, prod=true
         sameSite: "strict", // ป้องกัน CSRF
     });
 &nbsp;
     // ✅ ส่ง Access Token กลับไป
-<span class="cstat-no" title="statement not covered" >    res.json({ accessToken });</span>
+    res.json({ accessToken });
 };
 &nbsp;
 export const refresh = async (req: Request, res: Response) =&gt; {
@@ -348,7 +348,7 @@ export const refresh = async (req: Request, res: Response) =&gt; {
         return res.status(401).json({ message: "No refresh token provided" });
     }
 &nbsp;
-    const secret = process.env.JWT_SECRET || "defaultSecret";
+    const secret = process.env.JWT_SECRET || <span class="branch-1 cbranch-no" title="branch not covered" >"defaultSecret";</span>
 &nbsp;
     try {
         // ตรวจสอบ refresh token
@@ -373,7 +373,7 @@ export const refresh = async (req: Request, res: Response) =&gt; {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-08-24T12:30:23.533Z
+                at 2025-08-24T14:25:18.155Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
