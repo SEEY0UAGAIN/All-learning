@@ -14,7 +14,7 @@
     "forceConsistentCasingInFileNames": true,
 
     // Type Definitions
-    "types": ["node", "express"],
+    "types": ["node", "express", "jest"],
 
     // Decorators 
     "experimentalDecorators": true,

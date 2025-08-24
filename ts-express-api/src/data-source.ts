@@ -14,6 +14,7 @@ export const AppDataSource = new DataSource({
     database: process.env.DB_NAME,
     synchronize: process.env.NODE_ENV !== "production",  // prod ไม่ควร sync schema อัตโนมัติ
     logging: process.env.NODE_ENV === "development",     // log เฉพาะตอน dev
+    dropSchema: process.env.NODE_ENV === "test",
     entities: [User],
     migrations: [],
     subscribers: [],

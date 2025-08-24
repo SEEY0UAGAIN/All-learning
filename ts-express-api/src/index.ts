@@ -1,17 +1,10 @@
 import "reflect-metadata";
-import express from 'express';
 import { AppDataSource } from "./data-source";
-import authRoutes from "./routes/authRoutes";
+import app from "./app";
 import dotenv from "dotenv";
-import cookieParser from "cookie-parser";
-import errorHandler from "./middleware/errorHandler";
-
-const app = express();
 dotenv.config();
-const port = process.env.PORT || 3000;
 
-app.use(express.json());
-app.use(cookieParser());
+const port = process.env.PORT || 3000;
 
 async function waitForDatabaseAndStart() {
     const maxRetries = 10;
@@ -35,9 +28,6 @@ async function waitForDatabaseAndStart() {
         process.exit(1);
     }
 
-    app.use("/", authRoutes);
-    app.use(errorHandler);
-    
     app.listen(3000, "0.0.0.0", () => {
         console.log(`🚀 Server is running at http:localhost:${port}`);
     })
