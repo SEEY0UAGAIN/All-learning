@@ -14,7 +14,9 @@ jest.mock("../src/data-source", () => {
 });
 
 import { register, login, refresh} from "../src/controllers/authController";
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
+import { authenticateToken, authorizeRole } from "../src/middleware/authMiddleware";
+import { AuthRequest } from "../src/middleware/authMiddleware";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import dotenv from "dotenv";
@@ -150,5 +152,47 @@ describe("AuthController - refresh", () => {
     expect(res.json).toHaveBeenCalledWith(
     expect.objectContaining({ accessToken: expect.any(String) })
     );
+  });
+});
+
+describe("JWT Middleware", () => {
+  // กรณี token ถูก
+  it("should call next if token is valid", () => {
+    process.env.JWT_SECRET = "secret";
+    const token = jwt.sign({ userId: 1, username: "testuser", role: "user" }, process.env.JWT_SECRET);
+
+    const req: AuthRequest = {
+      headers: { authorization: `Bearer ${token}` },
+      user: undefined,
+    } as unknown as AuthRequest;
+
+    const res: Response = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    } as unknown as Response;
+
+    const next = jest.fn();
+
+    authenticateToken(req, res, next);
+
+    expect(next).toHaveBeenCalled();
+    expect(req.user).toMatchObject({ userId: 1, username: "testuser", role: "user" });
+  });
+  // กรณี role ไม่ตรง
+  it ("should return 403 if role if wrong", () => {
+    // mock request ที่มี role = user
+    const req = {user: { role: "user" } } as unknown as Request;
+    
+    // mock response
+    const res = {
+      status: jest.fn().mockReturnThis(), // mock status 
+      json: jest.fn() // mock function
+    } as unknown as Response; // บอกให้ typesrcipt รู้ว่าเป็น response
+
+    const next = jest.fn(); // mock next function ด้วย jest.fn() เพื่อดูว่า middleware เรียก next() หรือไม่
+
+    authorizeRole("admin")(req,res,next); // เรียก authorizeRole โดยกำนด role = admin
+
+    expect(res.status).toHaveBeenCalledWith(403); // ตรวจสอบว่า res.status เป็น 403
   });
 });

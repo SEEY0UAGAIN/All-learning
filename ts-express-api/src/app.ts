@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import express from "express";
-import authRoutes from "./routes/authRoutes";
+import authRoutes from "./routes/Routes";
 import cookieParser from "cookie-parser";
 import errorHandler from "./middleware/errorHandler";
 

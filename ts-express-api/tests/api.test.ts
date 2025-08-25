@@ -100,3 +100,31 @@ describe("ProfileAPI", () => {
         expect(res.body.user.username).toBe("updatedName");
     });
 });
+
+describe("Admin Routes", () => {
+    // ทดสอบแบบไม่ส่ง token
+    it("should deny access without token", async () => {
+        const res = await request(app).delete("/admin/user/1"); // ส่ง request ไปที่ user/1 โดยไม่มี token
+        expect(res.status).toBe(401); // ผลที่คาดหวังคือ status = 401
+    });
+    // ทดสอบกรณีไม่ใช่ admin
+    it("should deny access if not admin role", async () => { 
+        const token = jwt.sign({ userId: 1, username: "testuser", role: "user" }, "secret"); // สร้าง jwt ให้ user
+
+        const res = await request(app) // ส่ง request ไปที่ app
+            .delete("/admin/user/1") // ลบ user id = 1
+            .set("Authorization", `Bearer ${token}`); // แนบ Authorization header พร้อม token ที่ได้าร้างไว้ด้านบน
+
+        expect(res.status).toBe(403); // ผลที่คาดหวังคือ status = 403 
+    });
+    // ทดสอบกรณี role = admin
+    it("should allow admin to delete user", async () => {
+        const token = jwt.sign({ userId: 1, username: "admin", role: "admin" }, "secret"); // สร้าง jwt ให้ admin
+
+        const res = await request(app)
+            .delete("/admin/user/1") // ส่ง Delete request ไปที่ user/1
+            .set("Authorization", `Bearer ${token}`) // แนบ Authorization header พร้อม token ที่ได้าร้างไว้ด้านบน
+        
+        expect(res.status).toBe(200); // ผลที่คาดหวัง status 200
+    })
+})

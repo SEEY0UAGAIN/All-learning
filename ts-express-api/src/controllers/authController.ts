@@ -99,3 +99,8 @@ export const refresh = async (req: Request, res: Response) => {
         return res.status(403).json({ message: "Invalid refresh token" });
     }
 };
+
+export const deleteUser = (req: Request, res: Response) => {
+    const userId = req.params.id;
+  res.json({ message: `User ${userId} Deleted successfully` });
+}
