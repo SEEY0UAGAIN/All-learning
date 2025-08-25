@@ -119,7 +119,7 @@ describe("Admin Routes", () => {
     });
     // ทดสอบกรณี role = admin
     it("should allow admin to delete user", async () => {
-        const token = jwt.sign({ userId: 1, username: "admin", role: "admin" }, "secret"); // สร้าง jwt ให้ admin
+        const token = jwt.sign({ userId: 1, username: "adminuser", role: "admin" },process.env.JWT_SECRET || "secret",{ expiresIn: "1h" }); // สร้าง jwt ให้ admin
 
         const res = await request(app)
             .delete("/admin/user/1") // ส่ง Delete request ไปที่ user/1
