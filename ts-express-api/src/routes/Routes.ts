@@ -3,12 +3,15 @@ import { register, login, refresh } from "../controllers/authController";
 import { deleteUser, getAllUsers } from "../controllers/adminController";
 import { getProfile, editProfile } from "../controllers/profileController";
 import { authenticateToken, authorizeRole } from "../middleware/authMiddleware";
+import { RegisterDTO } from "../dto/RegisterDTO";
+import { LoginDTO } from "../dto/LoginDTO";
+import { validateDTO } from "../middleware/validateDTO";
 
 const router = Router();
 
 // auth
-router.post("/register", register);
-router.post("/login", login);
+router.post("/register", validateDTO(RegisterDTO), register);
+router.post("/login", validateDTO, login);
 router.post("/refresh", refresh);
 
 // profile

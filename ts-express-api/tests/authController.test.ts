@@ -32,14 +32,16 @@ const createMockResponse = () => {
 };
 
 describe("AuthController - register", () => {
+  let next: NextFunction;
   it("should return 201 and create user", async () => {
-    const req = { body: { username: "testuser", password: "123456" } } as Request;
+    const req = { body: { email: "testuser", password: "123456" } } as Request;
 
     const json = jest.fn();
     const status = jest.fn(() => ({ json }));
     const res = { status } as unknown as Response;
-
-    await register(req, res);
+    next = jest.fn();
+    
+    await register(req, res, next);
 
     expect(status).toHaveBeenCalledWith(201);
     expect(json).toHaveBeenCalledWith(expect.objectContaining({ message: "User registered" }));
@@ -47,11 +49,12 @@ describe("AuthController - register", () => {
 });
 
 describe("AuthController - Login", () => {
+  let next: NextFunction;
   it("Login complete", async () => {
     const secret = "testSecret";
     process.env.JWT_SECRET = secret;
     const hashedPassword = await bcrypt.hash("123456", 10);
-    const fakeUser = { id:1, username: "testuser", password: hashedPassword };
+    const fakeUser = { id:1, email: "testuser", password: hashedPassword };
 
     mockFindOneBy.mockResolvedValue(fakeUser);
 
@@ -61,10 +64,12 @@ describe("AuthController - Login", () => {
     } as any;
 
     const req = {
-      body: { username: "testuser", password: "123456" },
+      body: { email: "testuser", password: "123456" },
     } as Partial<Response>;
 
-    await login(req as any,res as any);
+    next = jest.fn();
+
+    await login(req as any,res as any, next as any);
 
     expect(res.json).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -85,21 +90,22 @@ describe("AuthController - Login", () => {
   it("User not found", async () => {
     mockFindOneBy.mockReturnValue(null);
 
-    const req = { body: { username: "UUUUUUUU", password: "123456"} } as Partial<Request>;
+    const req = { body: { email: "UUUUUUUU", password: "123456"} } as Partial<Request>;
     const res: Partial<Response> = {
       status: jest.fn().mockReturnThis(),
       json: jest.fn(),
     } as any;
 
-    await login(req as any, res as any);
+    next = jest.fn();
+
+    await login(req as any, res as any, next);
 
     expect(res.status).toHaveBeenCalledWith(404);
     expect(res.json).toHaveBeenCalledWith({ message: "User not found" });
   });
-
     it("Password is invalid", async () => {
     const hashedPassword = await bcrypt.hash("1111111", 10);
-    const fakeUser = { id:1, username: "testuser", password: hashedPassword };
+    const fakeUser = { id:1, email: "testuser", password: hashedPassword };
 
     mockFindOneBy.mockResolvedValue(fakeUser);
 
@@ -109,9 +115,11 @@ describe("AuthController - Login", () => {
       cookie: jest.fn(),
     } as any;
 
-    const req = { body: { username: "testuser", password: "1112221" } } as Partial<Response>;
+    const req = { body: { email: "testuser", password: "1112221" } } as Partial<Response>;
 
-    await login(req as any,res as any);
+    next = jest.fn();
+
+    await login(req as any,res as any, next);
 
   expect(res.status).toHaveBeenCalledWith(401);
   expect(res.json).toHaveBeenCalledWith({ message: "Invalid password" });
@@ -159,7 +167,7 @@ describe("JWT Middleware", () => {
   // กรณี token ถูก
   it("should call next if token is valid", () => {
     process.env.JWT_SECRET = "secret";
-    const token = jwt.sign({ userId: 1, username: "testuser", role: "user" }, process.env.JWT_SECRET);
+    const token = jwt.sign({ userId: 1, email: "testuser", role: "user" }, process.env.JWT_SECRET);
 
     const req: AuthRequest = {
       headers: { authorization: `Bearer ${token}` },
@@ -176,7 +184,7 @@ describe("JWT Middleware", () => {
     authenticateToken(req, res, next);
 
     expect(next).toHaveBeenCalled();
-    expect(req.user).toMatchObject({ userId: 1, username: "testuser", role: "user" });
+    expect(req.user).toMatchObject({ userId: 1, email: "testuser", role: "user" });
   });
   // กรณี role ไม่ตรง
   it ("should return 403 if role if wrong", () => {

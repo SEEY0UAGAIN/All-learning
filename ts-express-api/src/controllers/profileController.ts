@@ -14,9 +14,9 @@ export const getProfile = (req: Request, res: Response) => {
 
 export const editProfile = async (req: AuthRequest, res: Response, next: NextFunction) => {
 const id = Number(req.params.id);
-        const { username, password } = req.body;
+        const { email, password } = req.body;
 
-        if (username !== undefined && typeof username !== "string") {
+        if (email !== undefined && typeof email !== "string") {
           return res.status(400).json({ message: "Invalid input" });
         }
 
@@ -33,7 +33,7 @@ const id = Number(req.params.id);
             return next(error);
         }
 
-        if (username !== undefined) user.username = username;
+        if (email !== undefined) user.email = email;
         if (password !== undefined) user.password = await bcrypt.hash(password, 10);
 
         await userRepo.save(user);

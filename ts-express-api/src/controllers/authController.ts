@@ -1,77 +1,82 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { AppDataSource } from "../data-source";
 import { User } from "../entity/User";
+import { AppError } from "../middleware/errorHandler";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 export interface RegisterRequest {
-    username: string;
+    email: string;
     password: string;
 }
 
 export interface LoginRequest {
-    username: string;
+    email: string;
     password: string;
 }
 
-export const register = async (req: Request<{}, {}, RegisterRequest>,res: Response) => {
-    const { username, password } = req.body;
-    const userRepo = AppDataSource.getRepository(User);
+export const register = async (req: Request<{}, {}, RegisterRequest>,res: Response, next: NextFunction) => {
+    try {
+        const { email, password } = req.body;
+        const userRepo = AppDataSource.getRepository(User);
 
-    // ✅ Validation
-    if (!username || username.length < 3) {
-        return res
-            .status(400)
-            .json({ message: "Username must be at least 3 characters" });
+        if (!email.endsWith("@example.com")) {
+          throw new AppError("Email must be example.com", 400);
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        const newUser = userRepo.create({ email, password: hashedPassword });
+        await userRepo.save(newUser);
+
+        res.status(201).json({ message: "User registered", userId: newUser.id });
+    } catch (err) {
+        next(err);
     }
-    if (!password || password.length < 6) {
-        return res
-            .status(400)
-            .json({ message: "Password must be at least 6 characters" });
-    }
-
-    // ✅ Hash password
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    const user = userRepo.create({ username, password: hashedPassword });
-    await userRepo.save(user);
-
-    res.status(201).json({ message: "User registered", userId: user.id });
 };
 
-export const login = async (req: Request<{}, {}, LoginRequest>,res: Response) => {
-    const { username, password } = req.body;
-    const userRepo = AppDataSource.getRepository(User);
+export const login = async (req: Request<{}, {}, LoginRequest>,res: Response, next: NextFunction) => {
+    try {
+        const { email, password } = req.body;
+        const userRepo = AppDataSource.getRepository(User);
 
-    const user = await userRepo.findOneBy({ username });
-    if (!user) return res.status(404).json({ message: "User not found" });
+        const user = await userRepo.findOneBy({ email });
+        if (!user) {
+            throw new AppError("User not found", 404);
+        }
 
-    const validPassword = await bcrypt.compare(password, user.password);
-    if (!validPassword)
-        return res.status(401).json({ message: "Invalid password" });
+        const validPassword = await bcrypt.compare(password, user.password);
+        if (!validPassword) {
+            throw new AppError("Invalid password", 401);
+        }
 
-    // สร้าง Access Token
-    const secret = process.env.JWT_SECRET as string;
-    const accessToken = jwt.sign(
-        { userId: user.id, username: user.username },
-        secret,
-        { expiresIn: "15m" } // access token อายุสั้น
-    );
+        // สร้าง Access Token
+        const secret = process.env.JWT_SECRET;
+        if (!secret) throw new AppError("JWT secret not configured", 500);
 
-    // สร้าง Refresh Token
-    const refreshToken = jwt.sign({ userId: user.id }, secret, {
-        expiresIn: "7d",
-    });
+        const accessToken = jwt.sign(
+            { userId: user.id, email: user.email },
+            secret,
+            { expiresIn: "15m" } // access token อายุสั้น
+        );
 
-    // เก็บ Refresh Token ลง Cookie
-    res.cookie("refreshToken", refreshToken, {
-        httpOnly: true, // JS ฝั่ง client อ่านไม่ได้
-        secure: process.env.NODE_ENV === "production", // dev=false, prod=true
-        sameSite: "strict", // ป้องกัน CSRF
-    });
+        // สร้าง Refresh Token
+        const refreshToken = jwt.sign({ userId: user.id }, secret, {
+            expiresIn: "7d",
+        });
 
-    // ✅ ส่ง Access Token กลับไป
-    res.json({ accessToken });
+        // เก็บ Refresh Token ลง Cookie
+        res.cookie("refreshToken", refreshToken, {
+            httpOnly: true, // JS ฝั่ง client อ่านไม่ได้
+            secure: process.env.NODE_ENV === "production", // dev=false, prod=true
+            sameSite: "strict", // ป้องกัน CSRF
+        });
+
+        // ✅ ส่ง Access Token กลับไป
+        res.json({ accessToken });
+    } catch (err) {
+        next(err)
+    }
 };
 
 export const refresh = async (req: Request, res: Response) => {
@@ -81,7 +86,10 @@ export const refresh = async (req: Request, res: Response) => {
         return res.status(401).json({ message: "No refresh token provided" });
     }
 
-    const secret = process.env.JWT_SECRET || "defaultSecret";
+    if (!process.env.JWT_SECRET) {
+        throw new Error("JWT_SECRET is not defined");
+    }
+    const secret = process.env.JWT_SECRET;
 
     try {
         // ตรวจสอบ refresh token
@@ -100,7 +108,3 @@ export const refresh = async (req: Request, res: Response) => {
     }
 };
 
-export const deleteUser = (req: Request, res: Response) => {
-    const userId = req.params.id;
-  res.json({ message: `User ${userId} Deleted successfully` });
-}
