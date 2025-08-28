@@ -32,19 +32,15 @@ const createMockResponse = () => {
 };
 
 describe("AuthController - register", () => {
-  let next: NextFunction;
   it("should return 201 and create user", async () => {
-    const req = { body: { email: "testuser", password: "123456" } } as Request;
+    const req = { body: { email: "testuser@example.com", password: "123456" } } as Request;
+    const res = createMockResponse();
+    const next = jest.fn();
 
-    const json = jest.fn();
-    const status = jest.fn(() => ({ json }));
-    const res = { status } as unknown as Response;
-    next = jest.fn();
-    
     await register(req, res, next);
 
-    expect(status).toHaveBeenCalledWith(201);
-    expect(json).toHaveBeenCalledWith(expect.objectContaining({ message: "User registered" }));
+    expect(res.status).toHaveBeenCalledWith(201);
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ message: "User registered" }));
   });
 });
 
@@ -89,19 +85,20 @@ describe("AuthController - Login", () => {
 
   it("User not found", async () => {
     mockFindOneBy.mockReturnValue(null);
-
     const req = { body: { email: "UUUUUUUU", password: "123456"} } as Partial<Request>;
     const res: Partial<Response> = {
       status: jest.fn().mockReturnThis(),
       json: jest.fn(),
     } as any;
 
-    next = jest.fn();
+    const next = jest.fn();
 
     await login(req as any, res as any, next);
 
-    expect(res.status).toHaveBeenCalledWith(404);
-    expect(res.json).toHaveBeenCalledWith({ message: "User not found" });
+    expect(next).toHaveBeenCalled();
+    const error = next.mock.calls[0][0];
+    expect(error.message).toBe("User not found");
+    expect(error.status).toBe(404);
   });
     it("Password is invalid", async () => {
     const hashedPassword = await bcrypt.hash("1111111", 10);
@@ -117,12 +114,14 @@ describe("AuthController - Login", () => {
 
     const req = { body: { email: "testuser", password: "1112221" } } as Partial<Response>;
 
-    next = jest.fn();
+    const next = jest.fn();
 
     await login(req as any,res as any, next);
 
-  expect(res.status).toHaveBeenCalledWith(401);
-  expect(res.json).toHaveBeenCalledWith({ message: "Invalid password" });
+    expect(next).toHaveBeenCalled();
+    const error = next.mock.calls[0][0];
+    expect(error.message).toBe("Invalid password");
+    expect(error.status).toBe(401);
   });
 });
 

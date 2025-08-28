@@ -20,7 +20,7 @@ const createMockResponse = () => {
 
 describe("ProfileController", () => {
   it("should return user profile", async () => {
-    const req = { user: { id: 1, username: "testuser" } } as Partial<Request> & { user: { id: number, username: string } };
+    const req = { user: { id: 1, email: "testuser" } } as Partial<Request> & { user: { id: number, email: string } };
     const res = createMockResponse();
 
     await getProfile(req as Request, res);
@@ -41,7 +41,7 @@ describe("ProfileController - editProfile", () => {
   beforeEach(() => {
     req = {
       params: { id: "1" },
-      body: { username: "newuser", password: "newpassword" },
+      body: { email: "newuser", password: "newpassword" },
     };
     res = createMockResponse();
     next = jest.fn();
@@ -54,7 +54,7 @@ describe("ProfileController - editProfile", () => {
   });
 
   it("should update username and password successfully", async () => {
-    repo.findOneBy.mockResolvedValue({ id: 1, username: "olduser", password: "oldhash" });
+    repo.findOneBy.mockResolvedValue({ id: 1, email: "olduser", password: "oldhash" });
 
     await editProfile(req as Request, res as Response, next);
 
@@ -62,14 +62,14 @@ describe("ProfileController - editProfile", () => {
     expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
       message: "Profile Updated",
       user: expect.objectContaining({
-        username: "newuser",
+        email: "newuser",
         password: expect.any(String),
       }),
     }));
   });
 
   it("should return 400 if username is invalid type", async () => {
-    req.body = { username: 123, password: "newpassword" };
+    req.body = { email: 123, password: "newpassword" };
 
     await editProfile(req as Request, res as Response, next);
 

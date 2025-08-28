@@ -21,7 +21,7 @@ describe("Auth API", () => {
     it("POST /register should create a user", async () => {
         const res = await request(app)
         .post("/register")
-        .send({ username: "integrationTest", password: "123456"});
+        .send({ email: "integrationTest@example.com", password: "123456"});
 
         expect(res.status).toBe(201);
 
@@ -33,7 +33,7 @@ describe("Auth API", () => {
     it("POST /login should return JWT token", async () => {
         const res = await request (app)
         .post("/login")
-        .send({ username: "integrationTest", password: "123456"});
+        .send({ email: "integrationTest@example.com", password: "123456"});
 
         expect(res.status).toBe(200);
         expect(res.body).toHaveProperty("accessToken");
@@ -93,11 +93,11 @@ describe("ProfileAPI", () => {
         const res = await request (app)
         .put(`/profile/${userId}`)
         .set("Authorization", `Bearer ${accessToken}`)
-        .send({ username: "updatedName" });
+        .send({ email: "updatedName" });
 
         expect(res.status).toBe(200);
         expect(res.body).toHaveProperty("message", "Profile Updated");
-        expect(res.body.user.username).toBe("updatedName");
+        expect(res.body.user.email).toBe("updatedName");
     });
 });
 
@@ -109,7 +109,7 @@ describe("Admin Routes", () => {
     });
     // ทดสอบกรณีไม่ใช่ admin
     it("should deny access if not admin role", async () => { 
-        const token = jwt.sign({ userId: 1, username: "testuser", role: "user" }, "secret"); // สร้าง jwt ให้ user
+        const token = jwt.sign({ userId: 1, email: "testuser", role: "user" }, "secret"); // สร้าง jwt ให้ user
 
         const res = await request(app) // ส่ง request ไปที่ app
             .delete("/admin/user/1") // ลบ user id = 1
@@ -119,7 +119,7 @@ describe("Admin Routes", () => {
     });
     // ทดสอบกรณี role = admin
     it("should allow admin to delete user", async () => {
-        const token = jwt.sign({ userId: 1, username: "adminuser", role: "admin" },process.env.JWT_SECRET || "secret",{ expiresIn: "1h" }); // สร้าง jwt ให้ admin
+        const token = jwt.sign({ userId: 1, email: "adminuser", role: "admin" },process.env.JWT_SECRET || "secret",{ expiresIn: "1h" }); // สร้าง jwt ให้ admin
 
         const res = await request(app)
             .delete("/admin/user/1") // ส่ง Delete request ไปที่ user/1
